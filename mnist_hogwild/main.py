@@ -7,7 +7,7 @@ import torch.multiprocessing as mp
 from torch.utils.data.sampler import Sampler
 from torchvision import datasets, transforms
 import torch.optim as optim
-from nni.algorithms.compression.pytorch.quantization import QAT_Quantizer
+from nni.algorithms.compression.pytorch.quantization import QAT_Quantizer, BNNQuantizer
 
 from train import train, test
 
@@ -67,7 +67,7 @@ def quantize_model(model, optimizer):
 }]
   
   dummy_input = torch.rand(32, 1, 28, 28).to(device)
-  quantizer = QAT_Quantizer(model, config_list, optimizer, dummy_input)
+  quantizer = BNNQuantizer(model, config_list, optimizer, dummy_input)
   quantizer.compress()
   print(quantizer)
   print(model)
