@@ -84,8 +84,8 @@ def quantize_model(model, optimizer):
 
   # Once training is complete, we can test the model
   test(args, model, device, dataset2, optimizer, kwargs)
-  model_path = "./log/mnist_model.pth"
-  calibration_path = "./log/mnist_calibration.pth"
+  model_path = "./mnist_model.pth"
+  calibration_path = "./mnist_calibration.pth"
   calibration_config = quantizer.export_model(model_path, calibration_path)
   print("calibration_config: ", calibration_config)
   
