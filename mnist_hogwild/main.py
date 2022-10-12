@@ -6,7 +6,7 @@ import torch.nn.functional as F
 import torch.multiprocessing as mp
 from torch.utils.data.sampler import Sampler
 from torchvision import datasets, transforms
-#from nni.algorithms.compression.pytorch.quantization import QAT_Quantizer
+from nni.algorithms.compression.pytorch.quantization import QAT_Quantizer
 
 from train import train, test
 
