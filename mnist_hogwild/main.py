@@ -56,13 +56,13 @@ class Net(nn.Module):
 
 def quantize_model(model, optimizer):
   config_list = [{
-    'quant_types': ['weight'],
-    'quant_bits': 8,
+    'quant_types': ['weight','input'],
+    'quant_bits': {'weight': 8, 'input': 8},
     'op_types': ['Conv2d']
 }, 
     {
-    'quant_types': ['weight'],
-    'quant_bits': 8,
+    'quant_types': ['weight','input'],
+    'quant_bits': {'weight': 8, 'input': 8},
     'op_names': ['fc1']
 }]
   
