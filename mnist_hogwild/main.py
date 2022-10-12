@@ -67,7 +67,7 @@ def quantize_model(model, optimizer):
 }]
   
   dummy_input = torch.rand(32, 1, 28, 28).to(device)
-  quantizer = BNNQuantizer(model, config_list, optimizer, dummy_input)
+  quantizer = BNNQuantizer(model, config_list, optimizer)
   quantizer.compress()
   print(quantizer)
   print(model)
