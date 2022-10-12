@@ -71,11 +71,11 @@ def quantize_model(model, optimizer):
   config_list = [{
         'quant_types': ['weight'],
         'quant_bits': {
-            'weight': 8,
+            'weight': 1,
         },
         'op_types':['Conv2d']
     }]
-  quantizer = DoReFaQuantizer(model, config_list, optimizer)
+  quantizer = BNNQuantizer(model, config_list, optimizer)
   quantizer.compress()
   print(quantizer)
   print(model)
