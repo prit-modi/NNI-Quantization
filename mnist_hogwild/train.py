@@ -4,17 +4,17 @@ import torch.optim as optim
 import torch.nn.functional as F
 
 
-def train(rank, args, model, device, dataset, dataloader_kwargs):
+def train(rank, args, model, device, dataset, optimizer, dataloader_kwargs):
     torch.manual_seed(args.seed + rank)
 
     train_loader = torch.utils.data.DataLoader(dataset, **dataloader_kwargs)
 
-    optimizer = optim.SGD(model.parameters(), lr=args.lr, momentum=args.momentum)
+    #optimizer = optim.SGD(model.parameters(), lr=args.lr, momentum=args.momentum)
     for epoch in range(1, args.epochs + 1):
         train_epoch(epoch, args, model, device, train_loader, optimizer)
 
 
-def test(args, model, device, dataset, dataloader_kwargs):
+def test(args, model, device, dataset, optimizer, dataloader_kwargs):
     torch.manual_seed(args.seed)
 
     test_loader = torch.utils.data.DataLoader(dataset, **dataloader_kwargs)
