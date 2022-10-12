@@ -71,7 +71,7 @@ def quantize_model(model, optimizer):
   config_list = [{
         'quant_types': ['weight'],
         'quant_bits': {
-            'weight': 1,
+            'weight': 8,
         },
         'op_types':['Conv2d']
     }]
