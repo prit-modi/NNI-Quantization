@@ -6,6 +6,7 @@ import torch.nn.functional as F
 import torch.multiprocessing as mp
 from torch.utils.data.sampler import Sampler
 from torchvision import datasets, transforms
+import torch.optim as optim
 from nni.algorithms.compression.pytorch.quantization import QAT_Quantizer
 
 from train import train, test
@@ -53,7 +54,7 @@ class Net(nn.Module):
         x = self.fc2(x)
         return F.log_softmax(x, dim=1)
 
-def quantize_model(model):
+def quantize_model(model, optimizer):
   config_list = [{
     'quant_types': ['input', 'weight'],
     'quant_bits': {'input': 8, 'weight': 8},
@@ -74,7 +75,7 @@ def quantize_model(model):
   processes = []
   for rank in range(args.num_processes):
     p = mp.Process(target=train, args=(rank, args, model, device,
-                                           dataset1, kwargs))
+                                           dataset1, optimizer, kwargs))
     # We first train the model across `num_processes` processes
     p.start()
     processes.append(p)
@@ -82,7 +83,7 @@ def quantize_model(model):
     p.join()
 
   # Once training is complete, we can test the model
-  test(args, model, device, dataset2, kwargs)
+  test(args, model, device, dataset2, optimizer, kwargs)
   
   
   
@@ -114,6 +115,7 @@ if __name__ == '__main__':
         kwargs.update({'num_workers': 1,
                        'pin_memory': True,
                       })
+    optimizer = optim.SGD(model.parameters(), lr=args.lr, momentum=args.momentum)
 
     torch.manual_seed(args.seed)
     mp.set_start_method('spawn', force=True)
@@ -124,7 +126,7 @@ if __name__ == '__main__':
     processes = []
     for rank in range(args.num_processes):
         p = mp.Process(target=train, args=(rank, args, model, device,
-                                           dataset1, kwargs))
+                                           dataset1, optimizer, kwargs))
         # We first train the model across `num_processes` processes
         p.start()
         processes.append(p)
@@ -132,5 +134,5 @@ if __name__ == '__main__':
         p.join()
 
     # Once training is complete, we can test the model
-    test(args, model, device, dataset2, kwargs)
-    quantize_model(model)
+    test(args, model, device, dataset2, optimizer, kwargs)
+    quantize_model(model,optimizer)
