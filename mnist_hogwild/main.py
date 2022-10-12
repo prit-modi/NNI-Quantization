@@ -69,6 +69,8 @@ def quantize_model(model, optimizer):
   dummy_input = torch.rand(32, 1, 28, 28).to(device)
   quantizer = QAT_Quantizer(model, config_list, optimizer, dummy_input)
   quantizer.compress()
+  print(quantizer)
+  print(model)
   train(rank, args, model, device,dataset1, optimizer, kwargs)
 #   processes = []
 #   for rank in range(args.num_processes):
@@ -82,6 +84,10 @@ def quantize_model(model, optimizer):
 
   # Once training is complete, we can test the model
   test(args, model, device, dataset2, optimizer, kwargs)
+  model_path = "./log/mnist_model.pth"
+  calibration_path = "./log/mnist_calibration.pth"
+  calibration_config = quantizer.export_model(model_path, calibration_path)
+  print("calibration_config: ", calibration_config)
   
   
   
