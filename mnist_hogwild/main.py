@@ -115,13 +115,13 @@ if __name__ == '__main__':
         kwargs.update({'num_workers': 1,
                        'pin_memory': True,
                       })
-    optimizer = optim.SGD(model.parameters(), lr=args.lr, momentum=args.momentum)
 
     torch.manual_seed(args.seed)
     mp.set_start_method('spawn', force=True)
 
     model = Net().to(device)
     model.share_memory() # gradients are allocated lazily, so they are not shared here
+    optimizer = optim.SGD(model.parameters(), lr=args.lr, momentum=args.momentum)
 
     processes = []
     for rank in range(args.num_processes):
