@@ -27,7 +27,7 @@ parser.add_argument('--seed', type=int, default=1, metavar='S',
                     help='random seed (default: 1)')
 parser.add_argument('--log-interval', type=int, default=10, metavar='N',
                     help='how many batches to wait before logging training status')
-parser.add_argument('--num-processes', type=int, default=2, metavar='N',
+parser.add_argument('--num-processes', type=int, default=1, metavar='N',
                     help='how many training processes to use (default: 2)')
 parser.add_argument('--cuda', action='store_true', default=False,
                     help='enables CUDA training')
@@ -69,15 +69,16 @@ def quantize_model(model, optimizer):
   dummy_input = torch.rand(32, 1, 28, 28).to(device)
   quantizer = QAT_Quantizer(model, config_list, optimizer, dummy_input)
   quantizer.compress()
-  processes = []
-  for rank in range(args.num_processes):
-    p = mp.Process(target=train, args=(rank, args, model, device,
-                                           dataset1, optimizer, kwargs))
-    # We first train the model across `num_processes` processes
-    p.start()
-    processes.append(p)
-  for p in processes:
-    p.join()
+  train(rank, args, model, device,dataset1, optimizer, kwargs)
+#   processes = []
+#   for rank in range(args.num_processes):
+#     p = mp.Process(target=train, args=(rank, args, model, device,
+#                                            dataset1, optimizer, kwargs))
+#     # We first train the model across `num_processes` processes
+#     p.start()
+#     processes.append(p)
+#   for p in processes:
+#     p.join()
 
   # Once training is complete, we can test the model
   test(args, model, device, dataset2, optimizer, kwargs)
