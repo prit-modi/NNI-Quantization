@@ -73,7 +73,7 @@ def quantize_model(model, optimizer):
         'quant_bits': {
             'weight': 8,
         },
-        'op_types':['Conv2d', 'Linear']
+        'op_types':['Conv2d']
     }]
   quantizer = DoReFaQuantizer(model, config_list, optimizer)
   quantizer.compress()
